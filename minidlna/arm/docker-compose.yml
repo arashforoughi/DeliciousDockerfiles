@@ -1,0 +1,6 @@
+minidlna:
+  image: easypi/minidlna-arm
+  volumes:
+    - ./data:/opt
+  net: host
+  restart: always

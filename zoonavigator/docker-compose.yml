@@ -1,0 +1,10 @@
+version: '3.7'
+services:
+  zoonavigator:
+    image: elkozmon/zoonavigator
+    ports:
+      - "9000:9000"
+    environment:
+      - HTTP_PORT=9000
+      - AUTO_CONNECT_CONNECTION_STRING=zk1:2181,zk2:2181,zk3:2181
+    restart: unless-stopped

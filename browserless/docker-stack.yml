@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+
+  browserless:
+    image: browserless/chrome:1-chrome-stable
+    ports:
+      - "3000:3000"
+    environment:
+      - DEBUG=browserless/chrome
+      - MAX_CONCURRENT_SESSIONS=10
+      - CONNECTION_TIMEOUT=300000
+      - MAX_QUEUE_LENGTH=10
+      - ENABLE_CORS=true
+      - ENABLE_DEBUG_VIEWER=false
+      - EXIT_ON_HEALTH_FAILURE=true
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+      replicas: 56
+      placement:
+        max_replicas_per_node: 4
+      restart_policy:
+        condition: on-failure
+
+  cleanup:
+    image: docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: docker system prune --all --force
+    deploy:
+      mode: global
+      restart_policy:
+        delay: 24h
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 192.168.128.0/24

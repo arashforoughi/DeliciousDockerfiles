@@ -1,0 +1,9 @@
+node-red:
+  image: easypi/node-red-arm
+  ports:
+    - "1880:1880"
+  volumes:
+    - ./data:/data
+    - /dev/input:/dev/input
+  privileged: true
+  restart: always

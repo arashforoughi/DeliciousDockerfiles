@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+
+  doods:
+    image: snowzach/doods:arm32
+    ports:
+      - "8080:8080"
+    configs:
+      - source: config.yaml
+        target: /opt/doods/config.yaml
+    deploy:
+      replicas: 2
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - node.role == worker
+      restart_policy:
+        condition: on-failure
+
+configs:
+  config.yaml:
+    file: ./data/config.yaml

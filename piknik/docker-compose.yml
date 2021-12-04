@@ -1,0 +1,7 @@
+piknik:
+  image: vimagick/piknik
+  ports:
+    - "8075:8075"
+  volumes:
+    - ./data:/etc/piknik
+  restart: unless-stopped

@@ -1,0 +1,78 @@
+#
+# https://github.com/ansible/awx/blob/17.1.0/installer/roles/local_docker/templates/docker-compose.yml.j2
+#
+
+version: '2'
+
+services:
+
+  web:
+    image: ansible/awx:17.1.0
+    container_name: awx_web
+    hostname: awxweb
+    user: root
+    ports:
+      - "8052:8052"
+    volumes:
+      - supervisor-socket:/var/run/supervisor
+      - rsyslog-socket:/var/run/awx-rsyslog
+      - rsyslog-config:/var/lib/awx/rsyslog
+      - ./data/settings/SECRET_KEY:/etc/tower/SECRET_KEY
+      - ./data/settings/environment.sh:/etc/tower/conf.d/environment.sh
+      - ./data/settings/credentials.py:/etc/tower/conf.d/credentials.py
+      - ./data/settings/nginx.conf:/etc/nginx/nginx.conf
+      - ./data/redis/redis_socket:/var/run/redis:rw
+      - ./data/projects:/var/lib/awx/projects:rw
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  task:
+    image: ansible/awx:17.1.0
+    command: /usr/bin/launch_awx_task.sh
+    container_name: awx_task
+    hostname: awx
+    user: root
+    volumes:
+      - supervisor-socket:/var/run/supervisor
+      - rsyslog-socket:/var/run/awx-rsyslog
+      - rsyslog-config:/var/lib/awx/rsyslog
+      - ./data/settings/SECRET_KEY:/etc/tower/SECRET_KEY
+      - ./data/settings/environment.sh:/etc/tower/conf.d/environment.sh
+      - ./data/settings/credentials.py:/etc/tower/conf.d/credentials.py
+      - ./data/redis/redis_socket:/var/run/redis:rw
+      - ./data/projects:/var/lib/awx/projects:rw
+    environment:
+      SUPERVISOR_WEB_CONFIG_PATH: /etc/supervisord.conf
+    depends_on:
+      - postgres
+      - redis
+      - web
+    restart: unless-stopped
+
+  redis:
+    image: redis:5-alpine
+    container_name: awx_redis
+    command: ["/usr/local/etc/redis/redis.conf"]
+    volumes:
+      - ./data/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - ./data/redis/redis_socket:/var/run/redis:rw
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:13-alpine
+    container_name: awx_postgres
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data/pgdata:Z
+    environment:
+      POSTGRES_USER: awx
+      POSTGRES_PASSWORD: awxpass
+      POSTGRES_DB: awx
+      PGDATA: /var/lib/postgresql/data/pgdata
+    restart: unless-stopped
+
+volumes:
+  supervisor-socket:
+  rsyslog-socket:
+  rsyslog-config:

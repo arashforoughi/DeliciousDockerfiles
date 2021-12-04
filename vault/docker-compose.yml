@@ -1,0 +1,11 @@
+vault:
+  image: vimagick/vault
+  ports:
+    - "8200:8200"
+  volumes:
+    - ./data/etc:/etc/vault
+    - ./data/var:/var/lib/vault
+    - ./data/log:/var/log/vault
+  cap_add:
+    - IPC_LOCK
+  restart: always

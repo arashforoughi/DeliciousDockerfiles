@@ -1,0 +1,8 @@
+samba:
+  image: vimagick/samba
+  volumes:
+    - ./data/smb.conf:/etc/samba/smb.conf
+    - ./share:/share
+  net: host
+  tty: yes
+  restart: always

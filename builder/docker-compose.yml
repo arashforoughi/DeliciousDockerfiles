@@ -1,0 +1,9 @@
+builder:
+  image: tutum/builder
+  volumes:
+    - ~/.docker:/.docker:ro
+  environment:
+    - GIT_REPO=https://github.com/vimagick/dockerfiles.git
+    - DOCKERFILE_PATH=/test
+    - IMAGE_NAME=vimagick/test:latest
+  privileged: true

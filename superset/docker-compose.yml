@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+
+  redis:
+    image: redis:5-alpine
+    command: --save 900 1
+    volumes:
+      - ./data/redis:/data
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:12-alpine
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: superset
+      POSTGRES_PASSWORD: superset
+      POSTGRES_USER: superset
+    restart: unless-stopped
+
+  superset:
+    image: amancevice/superset:1.1.0
+    ports:
+      - "8088:8088"
+    volumes:
+      - ./data/superset:/etc/superset
+    environment:
+      MAPBOX_API_KEY: ${MAPBOX_API_KEY}
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  worker:
+    image: amancevice/superset:1.1.0
+    command: celery worker
+    volumes:
+      - ./data/superset:/etc/superset
+    environment:
+      MAPBOX_API_KEY: ${MAPBOX_API_KEY}
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped

@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+
+  hub:
+    image: selenium/hub:4
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
+    restart: unless-stopped
+
+  chrome:
+    image: selenium/node-chrome:4
+    ports:
+      - "5900:5900"
+      - "7900:7900"
+    environment:
+      - SE_EVENT_BUS_HOST=hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      - SE_NODE_MAX_SESSIONS=4
+    shm_size: 2gb
+    depends_on:
+      - hub
+    restart: unless-stopped
+
+  video:
+    image: selenium/video
+    volumes:
+      - ./data:/videos
+    environment:
+      - DISPLAY_CONTAINER_NAME=chrome
+      - FILE_NAME=output.mp4
+    shm_size: 2gb
+    depends_on:
+      - chrome
+    restart: unless-stopped

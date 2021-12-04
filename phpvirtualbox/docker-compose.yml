@@ -1,0 +1,9 @@
+phpvirtualbox:
+  image: vimagick/phpvirtualbox
+  ports:
+    - "8888:80"
+  volumes:
+    - ./data/config.php:/var/www/config.php:ro
+  extra_hosts:
+    - vboxwebsrv:x.x.x.x
+  restart: always

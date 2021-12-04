@@ -1,0 +1,29 @@
+name: example rule
+is_enabled: true
+es_host: elasticsearch
+es_port: 9200
+type: frequency
+index: logstash-*
+doc_type: _doc
+use_count_query: true
+num_events: 10
+
+timeframe:
+  minutes: 5
+
+realert:
+  minutes: 60
+
+filter:
+- query:
+    query_string:
+      query: 'response:[500 TO *]'
+
+alert:
+- command:
+    command: [echo, bad, things, happen]
+- slack:
+    slack_webhook_url: https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX
+    slack_username_override: ElastAlert
+    slack_channel_override: '#monit'
+    slack_emoji_override: ':bell:'

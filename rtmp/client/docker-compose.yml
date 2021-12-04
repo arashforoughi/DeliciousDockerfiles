@@ -1,0 +1,10 @@
+client:
+  image: easypi/rtmp-client-arm
+# command:
+#   - ffmpeg -i $$RTMP_DEV -video_size 800x600 -f flv $$RTMP_URI
+  devices:
+    - /dev/video0:/dev/video0
+  environment:
+#   - RTMP_DEV=rtsp://192.168.42.1/live
+    - RTMP_URI=rtmp://cctv.easypi.info/live/webcam
+  restart: always

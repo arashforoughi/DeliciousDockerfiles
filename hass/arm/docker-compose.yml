@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  hass:
+    image: easypi/hass-arm
+    volumes:
+      - ./data:/etc/hass
+    network_mode: host
+    privileged: yes
+    restart: unless-stopped

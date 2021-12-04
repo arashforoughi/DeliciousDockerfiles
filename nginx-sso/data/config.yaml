@@ -1,0 +1,41 @@
+---
+
+listen:
+  addr: "0.0.0.0"
+  port: 8082
+
+login:
+  title: "yourdomain.com - Login"
+  default_method: "simple"
+  hide_mfa_field: true
+  names:
+    simple: "Username / Password"
+
+cookie:
+  domain: ".yourdomain.com"
+  # To regenerate this key: cat /dev/urandom | tr -dc "A-Za-z0-9" | dd bs=1 count=60 2>/dev/null
+  authentication_key: "5foFtWocwA3hq0tUztgMqn9xaagqNP1wFqfFyZDHTxhr154iQQ60eDI9z6oDVNHF7B"
+
+audit_log:
+  targets:
+    - fd://stdout
+    - file:///data/audit.jsonl
+  events: ["access_denied", "login_success", "login_failure", "logout", "validate"]
+  headers: ["x-origin-uri"]
+  trusted_ip_headers: ["X-Forwarded-For", "RemoteAddr", "X-Real-IP"]
+
+acl:
+  rule_sets:
+  - rules:
+    - field: "X-Host"
+      regexp: ".*"
+    allow: ["@admins"]
+
+providers:
+  simple:
+    enable_basic_auth: true
+    users:
+      # To generate a new password: htpasswd -nbBC 10 username password
+      admin: "$2y$10$3aJxJ6ttJNPeky/bCdg1OOVvGU8pLVj9L.U9kN0F0JWLN.nt3b5WO"
+    groups:
+      admins: ["admin"]

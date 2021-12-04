@@ -1,0 +1,9 @@
+rslsync:
+  image: vimagick/rslsync
+  ports:
+    - "8888:8888"
+    - "55555:55555"
+  volumes:
+    - ./data:/data
+    - ./rslsync.conf:/etc/rslsync.conf
+  restart: always

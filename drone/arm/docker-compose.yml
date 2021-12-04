@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+
+  drone:
+    image: drone/drone:1.10-linux-arm
+    ports:
+      -  "8080:80"
+    volumes:
+      - ./data/drone:/data
+    environment:
+      - DRONE_SERVER_HOST=drone
+      - DRONE_SERVER_PROTO=http
+      - DRONE_RPC_SECRET=secret
+      - DRONE_DATABASE_DRIVER=sqlite3
+      - DRONE_DATABASE_DATASOURCE=/data/database.sqlite
+      - DRONE_GOGS_SERVER=http://gogs:3000
+      - DRONE_AGENTS_ENABLED=true
+    depends_on:
+      - gogs
+    restart: unless-stopped
+
+  agent:
+    image: drone/agent:1.10-linux-arm
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DRONE_RPC_PROTO=http
+      - DRONE_RPC_HOST=drone
+      - DRONE_RPC_SECRET=secret
+      - DRONE_RUNNER_NAME=agent
+      - DRONE_RUNNER_CAPACITY=2
+    depends_on:
+      - drone
+    restart: unless-stopped
+
+  gogs:
+    image: easypi/gogs-arm
+    ports:
+      - "2222:22"
+      - "3000:3000"
+    volumes:
+      - ./data/gogs:/data
+    restart: unless-stopped

@@ -1,0 +1,18 @@
+revive:
+  image: vimagick/revive
+  ports:
+    - "8080:80"
+  links:
+    - mysql
+  volumes:
+    - /var/www/html/plugins
+    - /var/www/html/var
+    - /var/www/html/www/images
+  restart: always
+
+mysql:
+  image: mysql
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_DATABASE=revive
+  restart: always

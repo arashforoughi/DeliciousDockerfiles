@@ -1,0 +1,8 @@
+server:
+  image: vimagick/rtmp-server
+  ports:
+    - "1935:1935"
+    - "9999:80"
+  volumes:
+    - ./data:/data
+  restart: always

@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  elastalert:
+    image: vimagick/elastalert
+    volumes:
+      - ./data:/opt/elastalert
+    environment:
+      - TZ=Asia/Shanghai
+    restart: unless-stopped
+
+networks:
+  default:
+    external:
+      name: elk_default

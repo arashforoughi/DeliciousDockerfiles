@@ -1,0 +1,10 @@
+pptpd:
+  image: vimagick/pptpd
+  ports:
+    - "1723:1723"
+  volumes:
+    - ./data/pptpd.conf:/etc/pptpd.conf
+    - ./data/pptpd-options:/etc/ppp/pptpd-options
+    - ./data/chap-secrets:/etc/ppp/chap-secrets
+  privileged: true
+  restart: always

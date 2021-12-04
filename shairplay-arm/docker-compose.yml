@@ -1,0 +1,8 @@
+shairplay:
+  image: easypi/shairplay-arm
+  devices:
+    - /dev/snd
+  environment:
+    - APNAME=EasyPi
+  net: host
+  restart: unless-stopped

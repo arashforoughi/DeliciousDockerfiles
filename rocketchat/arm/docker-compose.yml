@@ -1,0 +1,8 @@
+rocketchat:
+  image: rocket.chat
+  ports:
+    - "3000:3000"
+  environment:
+    - ROOT_URL=http://chat.easypi.pro
+    - MONGO_URL=mongodb://mongo.easypi.pro/rocketchat
+  restart: unless-stopped

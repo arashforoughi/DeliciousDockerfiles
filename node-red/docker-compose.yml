@@ -1,0 +1,9 @@
+node-red:
+  image: vimagick/node-red
+  ports:
+    - "1880:1880"
+  volumes:
+    - ./data:/data
+    - /dev/input:/dev/input
+  privileged: yes
+  restart: always

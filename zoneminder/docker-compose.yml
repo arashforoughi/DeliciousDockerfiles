@@ -1,0 +1,17 @@
+zoneminder:
+  image: vimagick/zoneminder
+  ports:
+    - "127.0.0.1:8080:80"
+  links:
+    - mysql
+  restart: always
+
+mysql:
+  image: mysql
+  volumes:
+    - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    - ./mysql:/docker-entrypoint-initdb.d
+    - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+  restart: always
